@@ -1,0 +1,38 @@
+{
+    "name": "fastadminnet/fastadmin-mailer",
+    "type": "library",
+    "keywords": ["mail", "smtp"],
+    "description": "A very lightweight PHP SMTP mail sender",
+    "license": "MIT",
+    "homepage": "https://github.com/fastadminnet/fastadmin-mailer",
+    "authors": [
+      {
+        "name": "Cloud",
+        "email": "cloud@txthinking.com",
+        "homepage": "http://www.txthinking.com",
+        "role": "Thinker"
+      },
+      {
+        "name": "Matt Sowers",
+        "email": "msowers@erblearn.org"
+      }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "psr/log": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~5.0",
+        "monolog/monolog": "~1.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tx\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/TestCase.php"
+        ]
+    }
+}
