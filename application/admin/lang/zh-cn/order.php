@@ -1,0 +1,33 @@
+<?php
+
+return [
+    'Id'           => '订单ID',
+    'Order_no'     => '订单编号',
+    'User_id'      => '用户账号',
+    'Product_id'   => '产品名称',
+    'Direction'    => '交易方向',
+    'Direction 0'  => '买涨',
+    'Direction 1'  => '买跌',
+    'Open_price'   => '入仓价格',
+    'Close_price'  => '结算价格',
+    'Trade_amount' => '交易金额',
+    'Fee'          => '手续费',
+    'Profit'       => '盈亏金额',
+    'Odds'         => '收益率(%)',
+    'Duration'     => '持仓时长(秒)',
+    'Status'       => '状态',
+    'Status 0'     => '持仓中',
+    'Set status to 0'=> '设为持仓中',
+    'Status 1'     => '已结算',
+    'Set status to 1'=> '设为已结算',
+    'Status 2'     => '已取消',
+    'Set status to 2'=> '设为已取消',
+    'Result'       => '结果',
+    'Result 0'     => '亏损',
+    'Result 1'     => '盈利',
+    'Result 2'     => '平局',
+    'Open_time'    => '下单时间',
+    'Close_time'   => '结算时间',
+    'Settle_time'  => '预计结算时间戳',
+    'Createtime'   => '创建时间'
+];

@@ -10,7 +10,6 @@
 // | Author: Byron Sampson <xiaobo.sun@qq.com>
 // +----------------------------------------------------------------------
 
-use Symfony\Component\VarExporter\VarExporter;
 use think\addons\Service;
 use think\App;
 use think\Cache;
@@ -476,6 +475,7 @@ function set_addon_info($name, $array)
             $res[] = "$key = " . (is_numeric($val) ? $val : $val);
         }
     }
+    Hook::listen($name . '_info_before_write', $array);
     if (file_put_contents($file, implode("\n", $res) . "\n", LOCK_EX)) {
         //清空当前配置缓存
         Config::set($name, null, 'addoninfo');
@@ -521,8 +521,15 @@ function set_addon_config($name, $config, $writefile = true)
  */
 function set_addon_fullconfig($name, $array)
 {
+    $config = [];
+    if (is_array($array)) {
+        foreach ($array as $key => $value) {
+            $config[$value['name']] = $value['value'];
+        }
+    }
+    Hook::listen($name . '_config_before_write', $config, $array);
     $file = ADDON_PATH . $name . DS . 'config.php';
-    $ret = file_put_contents($file, "<?php\n\n" . "return " . VarExporter::export($array) . ";\n", LOCK_EX);
+    $ret = file_put_contents($file, "<?php\n\n" . "return " . var_export_short($array, true) . ";\n", LOCK_EX);
     if (!$ret) {
         throw new Exception("配置写入失败");
     }

@@ -6,6 +6,7 @@ use app\admin\model\Admin;
 use app\admin\model\User;
 use app\common\controller\Backend;
 use app\common\model\Attachment;
+use app\common\model\Category;
 use fast\Date;
 use think\Db;
 
@@ -24,7 +25,7 @@ class Dashboard extends Backend
     public function index()
     {
         try {
-            \think\Db::execute("SET @@sql_mode='';");
+            Db::execute("SET @@sql_mode='';");
         } catch (\Exception $e) {
 
         }
@@ -57,7 +58,7 @@ class Dashboard extends Backend
             'totaluser'         => User::count(),
             'totaladdon'        => $totaladdon,
             'totaladmin'        => Admin::count(),
-            'totalcategory'     => \app\common\model\Category::count(),
+            'totalcategory'     => Category::count(),
             'todayusersignup'   => User::whereTime('jointime', 'today')->count(),
             'todayuserlogin'    => User::whereTime('logintime', 'today')->count(),
             'sevendau'          => User::whereTime('jointime|logintime|prevtime', '-7 days')->count(),

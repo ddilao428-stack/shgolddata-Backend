@@ -4,8 +4,10 @@ namespace app\api\controller;
 
 use app\common\controller\Api;
 use app\common\library\Ems as Emslib;
+use app\common\model\Ems as EmsModel;
 use app\common\model\User;
 use think\Hook;
+use think\Validate;
 
 /**
  * 邮箱验证码接口
@@ -47,7 +49,7 @@ class Ems extends Api
                 $this->error(__('验证码格式错误'));
             }
 
-            if (!\think\Validate::is($captcha, 'captcha')) {
+        if (!Validate::is($captcha, 'captcha')) {
                 $this->error("验证码不正确");
             }
         }
@@ -57,7 +59,7 @@ class Ems extends Api
             $this->error(__('发送频繁'));
         }
 
-        $ipSendTotal = \app\common\model\Ems::where(['ip' => $this->request->ip()])->whereTime('createtime', '-1 hours')->count();
+        $ipSendTotal = EmsModel::where(['ip' => $this->request->ip()])->whereTime('createtime', '-1 hours')->count();
         if ($ipSendTotal >= 5) {
             $this->error(__('发送频繁'));
         }

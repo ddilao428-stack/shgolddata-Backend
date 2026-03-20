@@ -5,9 +5,11 @@ namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\exception\UploadException;
 use app\common\library\Upload;
+use app\common\model\Announcement;
 use app\common\model\Area;
+use app\common\model\Banner;
+use app\common\model\Config as ConfigModel;
 use app\common\model\Version;
-use fast\Random;
 use think\captcha\Captcha;
 use think\Config;
 use think\Hook;
@@ -17,7 +19,7 @@ use think\Hook;
  */
 class Common extends Api
 {
-    protected $noNeedLogin = ['init', 'captcha'];
+    protected $noNeedLogin = ['init', 'captcha', 'banners', 'announcements', 'siteconfig'];
     protected $noNeedRight = '*';
 
     public function _initialize()
@@ -55,7 +57,7 @@ class Common extends Api
                 //临时修改上传模式为服务端中转
                 set_addon_config($upload['storage'], ["uploadmode" => "server"], false);
 
-                $upload = \app\common\model\Config::upload();
+                $upload = ConfigModel::upload();
                 // 上传信息配置后
                 Hook::listen("upload_config_init", $upload);
 
@@ -153,7 +155,7 @@ class Common extends Api
      */
     public function captcha($id = "")
     {
-        \think\Config::set([
+        Config::set([
             'captcha' => array_merge(config('captcha'), [
                 'fontSize' => 44,
                 'imageH'   => 150,
@@ -162,5 +164,53 @@ class Common extends Api
         ]);
         $captcha = new Captcha((array)Config::get('captcha'));
         return $captcha->entry($id);
+    }
+
+    /**
+     * 站点公共配置
+     * @ApiMethod (GET)
+     */
+    public function siteconfig()
+    {
+        $logo = Config::get('site.logo') ?: '';
+        if ($logo && !preg_match('/^https?:\/\//', $logo)) {
+            $logo = cdnurl($logo, true);
+        }
+        $this->success('', [
+            'service_link'  => Config::get('site.service_link') ?: '',
+            'site_logo'     => $logo,
+            'recharge_min'  => Config::get('site.recharge_min') ?: '100',
+            'recharge_max'  => Config::get('site.recharge_max') ?: '1000000',
+            'about_us'      => Config::get('site.about_us') ?: '',
+        ]);
+    }
+
+    /**
+     * 轮播图列表
+     * @ApiMethod (GET)
+     */
+    public function banners()
+    {
+        $list = Banner::where('status', 1)
+            ->order('sort desc, id desc')
+            ->field('id,title,image,url,sort')
+            ->select();
+        $this->success('', $list);
+    }
+
+    /**
+     * 公告列表
+     * @ApiMethod (GET)
+     */
+    public function announcements()
+    {
+        $now = time();
+        $list = Announcement::where('status', 1)
+            ->where('start_time', '<=', $now)
+            ->where('end_time', '>=', $now)
+            ->order('createtime desc')
+            ->field('id,title,content')
+            ->select();
+        $this->success('', $list);
     }
 }

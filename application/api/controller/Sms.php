@@ -4,8 +4,10 @@ namespace app\api\controller;
 
 use app\common\controller\Api;
 use app\common\library\Sms as Smslib;
+use app\common\model\Sms as SmsModel;
 use app\common\model\User;
 use think\Hook;
+use think\Validate;
 
 /**
  * 手机短信接口
@@ -28,14 +30,14 @@ class Sms extends Api
         $event = $this->request->post("event");
         $event = $event ? $event : 'register';
 
-        if (!$mobile || !\think\Validate::regex($mobile, "^1\d{10}$")) {
+        if (!$mobile || !Validate::regex($mobile, "^1\d{10}$")) {
             $this->error(__('手机号不正确'));
         }
         $last = Smslib::get($mobile, $event);
         if ($last && time() - $last['createtime'] < 60) {
             $this->error(__('发送频繁'));
         }
-        $ipSendTotal = \app\common\model\Sms::where(['ip' => $this->request->ip()])->whereTime('createtime', '-1 hours')->count();
+        $ipSendTotal = SmsModel::where(['ip' => $this->request->ip()])->whereTime('createtime', '-1 hours')->count();
         if ($ipSendTotal >= 5) {
             $this->error(__('发送频繁'));
         }
@@ -78,7 +80,7 @@ class Sms extends Api
         $event = $event ? $event : 'register';
         $captcha = $this->request->post("captcha");
 
-        if (!$mobile || !\think\Validate::regex($mobile, "^1\d{10}$")) {
+        if (!$mobile || !Validate::regex($mobile, "^1\d{10}$")) {
             $this->error(__('手机号不正确'));
         }
         if ($event) {

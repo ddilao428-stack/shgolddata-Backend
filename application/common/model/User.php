@@ -2,6 +2,7 @@
 
 namespace app\common\model;
 
+use app\common\service\MoneyService;
 use think\Db;
 use think\Model;
 
@@ -102,7 +103,7 @@ class User extends Model
                 //更新会员信息
                 $user->save(['money' => $after]);
                 //写入日志
-                MoneyLog::create(['user_id' => $user_id, 'money' => $money, 'before' => $before, 'after' => $after, 'memo' => $memo]);
+                MoneyService::log($user_id, MoneyService::TYPE_ADMIN, $money, $before, $after, $memo);
             }
             Db::commit();
         } catch (\Exception $e) {

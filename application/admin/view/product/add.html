@@ -1,0 +1,224 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Product_code')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-product_code" data-rule="required" class="form-control" name="row[product_code]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Capital_key')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-capital_key" data-rule="required" class="form-control" name="row[capital_key]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Name')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-name" data-rule="required" class="form-control" name="row[name]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Name_en')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-name_en" data-rule="required" class="form-control" name="row[name_en]" type="text" value="">
+        </div>
+    </div>
+    <!-- 数据源类型 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Data_source')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-data_source" data-rule="required" class="form-control" name="row[data_source]" type="text" value="External">
+        </div>
+    </div>
+    -->
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">产品分类:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select id="c-category_id" data-rule="required" class="form-control selectpicker" name="row[category_id]">
+                {foreach name="categoryList" item="vo" key="k"}
+                <option value="{$k}">{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+    <!-- 货币类型 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Currency')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-currency" data-rule="required" class="form-control" name="row[currency]" type="text" value="CNY">
+        </div>
+    </div>
+    -->
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Price_decimals')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-price_decimals" data-rule="required" class="form-control" name="row[price_decimals]" type="number" value="2">
+        </div>
+    </div>
+    <!-- 每日波动价格 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Dot_value')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-dot_value" data-rule="required" class="form-control" step="0.01" name="row[dot_value]" type="number" value="0.00">
+        </div>
+    </div>
+    -->
+    <!-- 波动点数 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Dot_unit')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-dot_unit" data-rule="required" class="form-control" name="row[dot_unit]" type="number" value="1">
+        </div>
+    </div>
+    -->
+    <!-- 当前价格 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Price')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-price" data-rule="required" class="form-control" step="0.000001" name="row[price]" type="number" value="0.000000">
+        </div>
+    </div>
+    -->
+    <!-- 今开 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Open_price')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-open_price" data-rule="required" class="form-control" step="0.000001" name="row[open_price]" type="number" value="0.000000">
+        </div>
+    </div>
+    -->
+    <!-- 昨收 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Close_price')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-close_price" data-rule="required" class="form-control" step="0.000001" name="row[close_price]" type="number" value="0.000000">
+        </div>
+    </div>
+    -->
+    <!-- 最高 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('High_price')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-high_price" data-rule="required" class="form-control" step="0.000001" name="row[high_price]" type="number" value="0.000000">
+        </div>
+    </div>
+    -->
+    <!-- 最低 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Low_price')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-low_price" data-rule="required" class="form-control" step="0.000001" name="row[low_price]" type="number" value="0.000000">
+        </div>
+    </div>
+    -->
+    <!-- 涨跌额 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Diff')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-diff" data-rule="required" class="form-control" step="0.000001" name="row[diff]" type="number" value="0.000000">
+        </div>
+    </div>
+    -->
+    <!-- 涨跌幅 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Diff_rate')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-diff_rate" data-rule="required" class="form-control" step="0.01" name="row[diff_rate]" type="number" value="0.00">
+        </div>
+    </div>
+    -->
+    <!-- 买入价 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Buy_price')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-buy_price" data-rule="required" class="form-control" step="0.000001" name="row[buy_price]" type="number" value="0.000000">
+        </div>
+    </div>
+    -->
+    <!-- 卖出价 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Sell_price')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-sell_price" data-rule="required" class="form-control" step="0.000001" name="row[sell_price]" type="number" value="0.000000">
+        </div>
+    </div>
+    -->
+    <!-- 买入量 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Buy_volume')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-buy_volume" data-rule="required" class="form-control" name="row[buy_volume]" type="number" value="0">
+        </div>
+    </div>
+    -->
+    <!-- 卖出量 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Sell_volume')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-sell_volume" data-rule="required" class="form-control" name="row[sell_volume]" type="number" value="0">
+        </div>
+    </div>
+    -->
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            
+            <div class="radio">
+            {foreach name="statusList" item="vo"}
+            <label for="row[status]-{$key}"><input id="row[status]-{$key}" name="row[status]" type="radio" value="{$key}" {in name="key" value="1"}checked{/in} /> {$vo}</label> 
+            {/foreach}
+            </div>
+
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">首页推荐:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-is_recommend" name="row[is_recommend]" type="hidden" value="0">
+            <a href="javascript:;" data-toggle="switcher" class="btn-switcher" data-input-id="c-is_recommend" data-yes="1" data-no="0">
+                <i class="fa fa-toggle-off text-gray fa-2x"></i>
+            </a>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Sort')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-sort" data-rule="required" class="form-control" name="row[sort]" type="number" value="0">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Time_config')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <textarea id="c-time_config" class="form-control " rows="5" name="row[time_config]" cols="50"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Icon')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input id="c-icon" class="form-control" size="50" name="row[icon]" type="text" value="">
+                <div class="input-group-addon no-border no-padding">
+                    <span><button type="button" id="faupload-icon" class="btn btn-danger faupload" data-input-id="c-icon" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp,image/webp" data-multiple="false" data-preview-id="p-icon"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>
+                    <span><button type="button" id="fachoose-icon" class="btn btn-primary fachoose" data-input-id="c-icon" data-mimetype="image/*" data-multiple="false"><i class="fa fa-list"></i> {:__('Choose')}</button></span>
+                </div>
+                <span class="msg-box n-right" for="c-icon"></span>
+            </div>
+            <ul class="row list-inline faupload-preview" id="p-icon"></ul>
+        </div>
+    </div>
+    <!-- 价格更新时间戳 隐藏
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Price_updatetime')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-price_updatetime" data-rule="required" class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss" data-use-current="true" name="row[price_updatetime]" type="text" value="{:date('Y-m-d H:i:s')}">
+        </div>
+    </div>
+    -->
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-primary btn-embossed disabled">{:__('OK')}</button>
+        </div>
+    </div>
+</form>

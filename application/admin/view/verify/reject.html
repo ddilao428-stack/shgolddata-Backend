@@ -1,0 +1,53 @@
+<form id="reject-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+    <input type="hidden" name="ids" value="{$row.id}">
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">用户账号:</label>
+        <div class="col-xs-12 col-sm-8">
+            <p class="form-control-static">{$row.user.username|default='-'}</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">真实姓名:</label>
+        <div class="col-xs-12 col-sm-8">
+            <p class="form-control-static">{$row.real_name}</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">证件号码:</label>
+        <div class="col-xs-12 col-sm-8">
+            <p class="form-control-static">{$row.id_card}</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">证件正面:</label>
+        <div class="col-xs-12 col-sm-8">
+            {if $row.id_card_front}
+            <img src="{$row.id_card_front}" style="max-width:200px;max-height:120px;border:1px solid #ddd;border-radius:4px;padding:2px;">
+            {else/}
+            <p class="form-control-static">-</p>
+            {/if}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">证件背面:</label>
+        <div class="col-xs-12 col-sm-8">
+            {if $row.id_card_back}
+            <img src="{$row.id_card_back}" style="max-width:200px;max-height:120px;border:1px solid #ddd;border-radius:4px;padding:2px;">
+            {else/}
+            <p class="form-control-static">-</p>
+            {/if}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">拒绝原因:</label>
+        <div class="col-xs-12 col-sm-8">
+            <textarea id="c-reject_reason" class="form-control" rows="3" name="reject_reason" placeholder="选填，填写后用户可查看"></textarea>
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-danger btn-embossed disabled">确认拒绝</button>
+        </div>
+    </div>
+</form>

@@ -2,8 +2,8 @@
 
 namespace app\admin\model;
 
-use app\common\model\MoneyLog;
 use app\common\model\ScoreLog;
+use app\common\service\MoneyService;
 use think\Model;
 
 class User extends Model
@@ -49,7 +49,7 @@ class User extends Model
             $changedata = $row->getChangedData();
             $origin = $row->getOriginData();
             if (isset($changedata['money']) && (function_exists('bccomp') ? bccomp($changedata['money'], $origin['money'], 2) !== 0 : (double)$changedata['money'] !== (double)$origin['money'])) {
-                MoneyLog::create(['user_id' => $row['id'], 'money' => $changedata['money'] - $origin['money'], 'before' => $origin['money'], 'after' => $changedata['money'], 'memo' => '管理员变更金额']);
+                MoneyService::log($row['id'], MoneyService::TYPE_ADMIN, $changedata['money'] - $origin['money'], $origin['money'], $changedata['money'], '管理员变更金额');
             }
             if (isset($changedata['score']) && (int)$changedata['score'] !== (int)$origin['score']) {
                 ScoreLog::create(['user_id' => $row['id'], 'score' => $changedata['score'] - $origin['score'], 'before' => $origin['score'], 'after' => $changedata['score'], 'memo' => '管理员变更积分']);

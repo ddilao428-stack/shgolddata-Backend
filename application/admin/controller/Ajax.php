@@ -10,10 +10,12 @@ use think\addons\Service;
 use think\Cache;
 use think\Config;
 use think\Db;
+use think\Hook;
 use think\Lang;
 use think\Loader;
 use think\Response;
 use think\Validate;
+use app\common\model\Config as ConfigModel;
 
 /**
  * Ajax异步请求接口
@@ -239,8 +241,8 @@ class Ajax extends Backend
                         if ($newversion && $newversion != $version) {
                             Db::startTrans();
                             try {
-                                \app\common\model\Config::where('name', 'version')->update(['value' => $newversion]);
-                                \app\common\model\Config::refreshFile();
+                                ConfigModel::where('name', 'version')->update(['value' => $newversion]);
+                                ConfigModel::refreshFile();
                                 Db::commit();
                             } catch (\Exception $e) {
                                 Db::rollback();
@@ -256,7 +258,7 @@ class Ajax extends Backend
             $this->error($e->getMessage());
         }
 
-        \think\Hook::listen("wipecache_after");
+        Hook::listen("wipecache_after");
         $this->success();
     }
 

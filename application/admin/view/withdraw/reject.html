@@ -1,0 +1,27 @@
+<form id="reject-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+    <input type="hidden" name="ids" value="{$row.id}">
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">提现单号:</label>
+        <div class="col-xs-12 col-sm-8">
+            <p class="form-control-static">{$row.order_no}</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">提现金额:</label>
+        <div class="col-xs-12 col-sm-8">
+            <p class="form-control-static">{$row.amount}</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">拒绝理由:</label>
+        <div class="col-xs-12 col-sm-8">
+            <textarea id="c-remark" class="form-control" rows="3" name="row[remark]" placeholder="选填，填写后用户可查看"></textarea>
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-danger btn-embossed disabled">{:__('确认拒绝')}</button>
+        </div>
+    </div>
+</form>

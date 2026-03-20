@@ -10,7 +10,6 @@ use PhpZip\Exception\ZipException;
 use PhpZip\ZipFile;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Symfony\Component\VarExporter\VarExporter;
 use think\Cache;
 use think\Db;
 use think\Exception;
@@ -206,6 +205,9 @@ class Service
             $extend['data'] = $zip->getArchiveComment();
             $extend['unknownsources'] = config('app_debug') && config('fastadmin.unknownsources');
             $extend['faversion'] = config('fastadmin.version');
+            $extend['phpversion'] = PHP_VERSION;
+            $mysqlVersion = Db::query('SELECT version() AS version');
+            $extend['mysqlversion'] = $mysqlVersion[0]['version'] ?? '';
 
             $params = array_merge($config, $extend);
 
@@ -300,6 +302,10 @@ class Service
         $addon = new $addonClass();
         if (!$addon->checkInfo()) {
             throw new Exception("The configuration file content is incorrect");
+        }
+        // 检测环境
+        if (method_exists($addon, 'checkEnv')) {
+            $addon->checkEnv();
         }
         return true;
     }
@@ -401,7 +407,7 @@ EOD;
             throw new Exception(__("Unable to open file '%s' for writing", "addons.php"));
         }
 
-        file_put_contents($file, "<?php\n\n" . "return " . VarExporter::export($config) . ";\n", LOCK_EX);
+        file_put_contents($file, "<?php\n\n" . "return " . var_export_short($config, true) . ";\n", LOCK_EX);
         return true;
     }
 
@@ -423,6 +429,9 @@ EOD;
         }
 
         $extend['domain'] = request()->host(true);
+        $extend['phpversion'] = PHP_VERSION;
+        $mysqlVersion = Db::query('SELECT version() AS version');
+        $extend['mysqlversion'] = $mysqlVersion[0]['version'] ?? '';
 
         // 远程下载插件
         $tmpFile = $tmpFile ?: Service::download($name, $extend);

@@ -13,7 +13,9 @@ class Index extends Frontend
 
     public function index()
     {
-        return $this->view->fetch();
+        // 重定向到/web
+        return $this->redirect('/web');
+        // return $this->view->fetch();
     }
 
 }

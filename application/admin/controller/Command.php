@@ -36,7 +36,7 @@ class Command extends Backend
     {
 
         $tableList = [];
-        $list = \think\Db::query("SHOW TABLES");
+        $list = Db::query("SHOW TABLES");
         foreach ($list as $key => $row) {
             $tableList[reset($row)] = reset($row);
         }

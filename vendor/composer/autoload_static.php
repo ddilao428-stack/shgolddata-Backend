@@ -23,6 +23,10 @@ class ComposerStaticInitf3106b6ef3260b6914241eab0bed11c1
     );
 
     public static $prefixLengthsPsr4 = array (
+        'w' => 
+        array (
+            'workerman\\' => 10,
+        ),
         't' => 
         array (
             'think\\helper\\' => 13,
@@ -37,6 +41,11 @@ class ComposerStaticInitf3106b6ef3260b6914241eab0bed11c1
         'Z' => 
         array (
             'ZipStream\\' => 10,
+        ),
+        'W' => 
+        array (
+            'Workerman\\MySQL\\' => 16,
+            'Workerman\\' => 10,
         ),
         'T' => 
         array (
@@ -85,6 +94,7 @@ class ComposerStaticInitf3106b6ef3260b6914241eab0bed11c1
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
+            'GatewayWorker\\' => 14,
         ),
         'E' => 
         array (
@@ -99,6 +109,10 @@ class ComposerStaticInitf3106b6ef3260b6914241eab0bed11c1
     );
 
     public static $prefixDirsPsr4 = array (
+        'workerman\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/extend/workerman',
+        ),
         'think\\helper\\' => 
         array (
             0 => __DIR__ . '/..' . '/topthink/think-helper/src',
@@ -113,9 +127,9 @@ class ComposerStaticInitf3106b6ef3260b6914241eab0bed11c1
         ),
         'think\\' => 
         array (
-            0 => __DIR__ . '/..' . '/fastadminnet/fastadmin-addons/src',
-            1 => __DIR__ . '/../..' . '/thinkphp/library/think',
-            2 => __DIR__ . '/..' . '/topthink/think-queue/src',
+            0 => __DIR__ . '/..' . '/topthink/think-queue/src',
+            1 => __DIR__ . '/..' . '/fastadminnet/fastadmin-addons/src',
+            2 => __DIR__ . '/../..' . '/thinkphp/library/think',
         ),
         'addons\\' => 
         array (
@@ -124,6 +138,14 @@ class ComposerStaticInitf3106b6ef3260b6914241eab0bed11c1
         'ZipStream\\' => 
         array (
             0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
+        ),
+        'Workerman\\MySQL\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/workerman/mysql/src',
+        ),
+        'Workerman\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/workerman/workerman',
         ),
         'Tx\\' => 
         array (
@@ -245,6 +267,10 @@ class ComposerStaticInitf3106b6ef3260b6914241eab0bed11c1
         'GuzzleHttp\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'GatewayWorker\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/workerman/gateway-worker/src',
         ),
         'EasyWeChat\\' => 
         array (

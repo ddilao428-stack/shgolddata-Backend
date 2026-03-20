@@ -101,6 +101,19 @@ class Api
         //移除HTML标签
         $this->request->filter('trim,strip_tags,htmlspecialchars');
 
+        // 根据前端传递的 lang header 切换语言
+        $langMap = [
+            'zh-CN' => 'zh-cn',
+            'zh-TW' => 'zh-tw',
+            'en'    => 'en',
+            'ja'    => 'ja',
+            'ko'    => 'ko',
+        ];
+        $headerLang = $this->request->header('lang', '');
+        if ($headerLang && isset($langMap[$headerLang])) {
+            Lang::range($langMap[$headerLang]);
+        }
+
         $this->auth = Auth::instance();
 
         $modulename = $this->request->module();
@@ -154,9 +167,31 @@ class Api
     {
         $name = Loader::parseName($name);
         $name = preg_match("/^([a-zA-Z0-9_\.\/]+)\$/i", $name) ? $name : 'index';
-        $lang = $this->request->langset();
-        $lang = preg_match("/^([a-zA-Z\-_]{2,10})\$/i", $lang) ? $lang : 'zh-cn';
-        Lang::load(APP_PATH . $this->request->module() . '/lang/' . $lang . '/' . str_replace('.', '/', $name) . '.php');
+        // 优先使用前端传递的 lang header
+        $langMap = [
+            'zh-CN' => 'zh-cn',
+            'zh-TW' => 'zh-tw',
+            'en'    => 'en',
+            'ja'    => 'ja',
+            'ko'    => 'ko',
+        ];
+        $headerLang = $this->request->header('lang', '');
+        if ($headerLang && isset($langMap[$headerLang])) {
+            $lang = $langMap[$headerLang];
+        } else {
+            $lang = $this->request->langset();
+            $lang = preg_match("/^([a-zA-Z\-_]{2,10})\$/i", $lang) ? $lang : 'zh-cn';
+        }
+        // 加载模块级语言包
+        $langFile = APP_PATH . $this->request->module() . '/lang/' . $lang . '/' . str_replace('.', '/', $name) . '.php';
+        if (is_file($langFile)) {
+            Lang::load($langFile);
+        }
+        // 加载模块级通用语言包
+        $commonFile = APP_PATH . $this->request->module() . '/lang/' . $lang . '.php';
+        if (is_file($commonFile)) {
+            Lang::load($commonFile);
+        }
     }
 
     /**

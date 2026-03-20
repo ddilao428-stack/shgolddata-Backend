@@ -32,7 +32,7 @@ class User extends Validate
      */
     protected $scene = [
         'add'  => [],
-        'edit' => ['username', 'nickname', 'password', 'email', 'mobile'],
+        'edit' => ['username', 'password', 'mobile'],
     ];
 
     public function __construct(array $rules = [], $message = [], $field = [])

@@ -42,13 +42,17 @@ return [
     // 默认时区
     'default_timezone'       => 'PRC',
     // 是否开启多语言
-    'lang_switch_on'         => false,
+    'lang_switch_on'         => true,
     // 默认全局过滤方法 用逗号分隔多个
     'default_filter'         => '',
     // 默认语言
     'default_lang'           => 'zh-cn',
     // 允许的语言列表
-    'allow_lang_list'        => ['zh-cn', 'en'],
+    'allow_lang_list'        => ['zh-cn', 'zh-tw', 'en', 'ja', 'ko'],
+    // 多语言自动侦测变量名
+    'lang_detect_var'        => 'lang',
+    // Header 自动侦测语言
+    'lang_detect_header'     => true,
     // 应用类库后缀
     'class_suffix'           => false,
     // 控制器类后缀
@@ -300,7 +304,7 @@ return [
         //插件纯净模式，插件启用后是否删除插件目录的application、public和assets文件夹
         'addon_pure_mode'       => true,
         //允许跨域的域名,多个以,分隔
-        'cors_request_domain'   => 'localhost,127.0.0.1',
+        'cors_request_domain'   => '*',
         //版本号
         'version'               => '1.6.1.20250430',
         //API接口地址

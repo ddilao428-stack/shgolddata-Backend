@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'Id'              => 'ID',
+    'User_id'         => '用户ID',
+    'User_username'   => '用户账号',
+    'Real_name'       => '真实姓名',
+    'Id_type'         => '证件类型',
+    'Id_type 1'       => '身份证',
+    'Id_type 2'       => '驾驶证',
+    'Id_type 3'       => 'SSN',
+    'Id_type 4'       => '护照',
+    'Id_card'         => '证件号码',
+    'Id_card_front'   => '证件正面照',
+    'Id_card_back'    => '证件背面照',
+    'Status'          => '审核状态',
+    'Status 0'        => '待审核',
+    'Set status to 0' => '设为待审核',
+    'Status 1'        => '已通过',
+    'Set status to 1' => '设为已通过',
+    'Status 2'        => '已拒绝',
+    'Set status to 2' => '设为已拒绝',
+    'Admin_id'        => '审核管理员ID',
+    'Audit_time'      => '审核时间',
+    'Reject_reason'   => '拒绝原因',
+    'Createtime'      => '提交时间',
+    'Updatetime'      => '更新时间',
+];

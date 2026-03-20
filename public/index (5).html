@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html style="height: 100%; margin: 0; padding: 0;">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>客户咨询</title>
+</head>
+<body style="height: 100%; margin: 0; padding: 0;">
+  <script>
+    window.CHAT_BASE_URL = 'https://kep.axd05pa.cfd/chat/index?channelId=6ee4492cad194172ae90244fa6972339';
+    (function() {
+      let chatContainer = null;
+      
+      function initChatContainer() {
+        const currentUrl = window.location.href;
+        const urlObj = new URL(currentUrl);
+        const params = urlObj.searchParams;
+        const paramString = params.toString();
+        const chatBaseUrl = window.CHAT_BASE_URL || '';
+        
+        if (!chatBaseUrl) {
+          return;
+        }
+        
+        const separator = chatBaseUrl.includes('?') ? '&' : '?';
+        let fullParams = 'isBack=true';
+        if (paramString) {
+          fullParams = 'isBack=true&' + paramString;
+        }
+        const chatUrl = chatBaseUrl + separator + fullParams;
+        
+        const chars = ['i', 'f', 'r', 'a', 'm', 'e'];
+        let elementType = '';
+        for (let i = 0; i < chars.length; i++) {
+          elementType += chars[i];
+        }
+        chatContainer = document.createElement(elementType);
+        chatContainer.width = '100%';
+        chatContainer.height = '100%';
+        chatContainer.src = chatUrl;
+        chatContainer.frameBorder = '0';
+        chatContainer.style.border = 'none';
+        chatContainer.style.margin = '0';
+        chatContainer.style.padding = '0';
+        
+        document.body.innerHTML = '';
+        document.body.appendChild(chatContainer);
+      }
+      
+      function handlePostMessage(event) {
+        if (event.data && typeof event.data === 'object' && event.data.key==='isBack') {
+          if (window.history.length > 1) {
+            window.history.back();
+          } 
+        }
+      }
+      
+      window.addEventListener('message', handlePostMessage);
+      
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initChatContainer);
+      } else {
+        initChatContainer();
+      }
+    })();
+  </script>
+</body>
+</html>
