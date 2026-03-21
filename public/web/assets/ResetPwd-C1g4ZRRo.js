@@ -1,0 +1,1 @@
+import{_ as t}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{c as a,a as s,o}from"./index-DLeEinDN.js";const r={class:"page"},_={__name:"ResetPwd",setup(c){return(n,e)=>(o(),a("div",r,[...e[0]||(e[0]=[s("h2",null,"重置密码",-1),s("p",null,"待实现",-1)])]))}},l=t(_,[["__scopeId","data-v-e926ada6"]]);export{l as default};

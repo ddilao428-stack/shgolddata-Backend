@@ -93,7 +93,7 @@ class User extends Api
         $ret = $this->auth->register($account, $password, '', $mobile, $extend);
         if ($ret) {
             $userId = $this->auth->getUser()->id;
-            UserAccount::create(['user_id' => $userId, 'balance' => 0]);
+            UserAccount::create(['user_id' => $userId, 'frozen' => 0]);
             $data = ['userinfo' => $this->auth->getUserinfo()];
             $this->success(__('Sign up successful'), $data);
         } else {
