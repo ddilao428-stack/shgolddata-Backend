@@ -72,9 +72,9 @@ class User extends Api
         if (!$account || !$nickname || !$mobile || !$password || !$tradePassword || !$captcha) {
             $this->error(__('Invalid parameters'));
         }
-        if (!captcha_check($captcha)) {
-            $this->error(__('Captcha is incorrect'));
-        }
+        // if (!captcha_check($captcha)) {
+        //     $this->error(__('Captcha is incorrect'));
+        // }
         if (!Validate::regex($mobile, '/^1\d{10}$/')) {
             $this->error(__('Mobile is incorrect'));
         }
