@@ -16,28 +16,45 @@ use think\Log;
  * 订单自动结算定时任务
  * 用法: php think settle_order
  * 支持输赢控制，逻辑对齐旧项目
+ *
+ * Supervisor 配置（宝塔面板）:
+ * [program:sg_settle_order]
+ * command=php think settle_order
+ * directory=/www/wwwroot/shgolddata-Backend/
+ * autorestart=true
+ * startsecs=0
+ * startretries=3
+ * stdout_logfile=/www/server/panel/plugin/supervisor/log/sg_settle_order.out.log
+ * stderr_logfile=/www/server/panel/plugin/supervisor/log/sg_settle_order.err.log
+ * stdout_logfile_maxbytes=2MB
+ * stderr_logfile_maxbytes=2MB
+ * user=root
+ * priority=999
+ * numprocs=1
+ * process_name=%(program_name)s_%(process_num)02d
+ *
+ * 注意: startsecs 必须设为 0，因为进程每次执行完会正常退出，由 autorestart 自动重启
  */
 class SettleOrder extends Command
 {
     protected function configure()
     {
-        $this->setName('settle_order')->setDescription('Settle expired orders (daemon)');
+        $this->setName('settle_order')->setDescription('Settle expired orders (single run)');
     }
 
     protected function execute(Input $input, Output $output)
     {
         $this->output = $output;
-        $output->info('订单结算守护进程已启动，每秒轮询到期订单...');
 
-        while (true) {
-            try {
-                $this->settleOnce($output);
-            } catch (\Exception $e) {
-                Log::error('settle_order loop error: ' . $e->getMessage());
-                $output->error($e->getMessage());
-            }
-            sleep(1);
+        try {
+            $this->settleOnce($output);
+        } catch (\Exception $e) {
+            Log::error('settle_order error: ' . $e->getMessage());
+            $output->error($e->getMessage());
         }
+
+        // 等待1秒后退出，由 Supervisor autorestart 自动重启实现持续轮询
+        sleep(1);
     }
 
     /**
