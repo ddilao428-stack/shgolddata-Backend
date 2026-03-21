@@ -146,4 +146,13 @@ return [
     'Added to favorites'                             => '收藏成功',
     'Not in favorites'                               => '未收藏该产品',
     'Removed from favorites'                         => '取消收藏成功',
+    // 流水相关翻译
+    'flow.fee'                                      => '手续费',
+    'flow.actualAmount'                             => '实际到账',
+    'flow.statusPending'                            => '待处理',
+    'flow.statusDone'                               => '已完成',
+    'flow.statusRejected'                           => '已拒绝',
+    'flow.rejectReason'                             => '拒绝原因',
+    'flow.payTypes.bank'                            => '银行卡',
+    'flow.payTypes.usdt'                            => 'USDT',
 ];

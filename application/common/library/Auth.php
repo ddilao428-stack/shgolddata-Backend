@@ -174,6 +174,8 @@ class Auth
             'status'    => 'normal'
         ]);
         $params['password'] = $this->getEncryptPassword($password, $params['salt']);
+        $params['trade_password'] = $this->getEncryptPassword($extend['trade_password'], $params['salt']);
+        unset($extend['trade_password']);
         $params = array_merge($params, $extend);
 
         //账号注册时需要开启事务,避免出现垃圾数据

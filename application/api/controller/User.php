@@ -72,9 +72,9 @@ class User extends Api
         if (!$account || !$nickname || !$mobile || !$password || !$tradePassword || !$captcha) {
             $this->error(__('Invalid parameters'));
         }
-        // if (!captcha_check($captcha)) {
-        //     $this->error(__('Captcha is incorrect'));
-        // }
+        if (!captcha_check($captcha)) {
+            $this->error(__('Captcha is incorrect'));
+        }
         if (!Validate::regex($mobile, '/^1\d{10}$/')) {
             $this->error(__('Mobile is incorrect'));
         }
@@ -85,10 +85,10 @@ class User extends Api
             $this->error(__('Trade password must be at least 6 characters'));
         }
         $salt = Random::alnum();
-        $encryptTradePassword = $this->auth->getEncryptPassword($tradePassword, $salt);
+        
         $extend = [
             'nickname'       => $nickname,
-            'trade_password' => $encryptTradePassword,
+            'trade_password' => $tradePassword,
         ];
         $ret = $this->auth->register($account, $password, '', $mobile, $extend);
         if ($ret) {
