@@ -26,6 +26,7 @@ class SettleOrder extends Command
 
     protected function execute(Input $input, Output $output)
     {
+        $this->output = $output;
         $output->info('订单结算守护进程已启动，每秒轮询到期订单...');
 
         while (true) {
@@ -58,9 +59,11 @@ class SettleOrder extends Command
             try {
                 $this->settleOne($order);
                 $settled++;
+                $output->info("  ✓ {$order->order_no} 结算成功");
             } catch (\Exception $e) {
                 $failed++;
                 Log::error("settle {$order->order_no}: " . $e->getMessage());
+                $output->error("  ✗ {$order->order_no} 失败: " . $e->getMessage());
             }
         }
         if ($settled || $failed) {
@@ -71,6 +74,8 @@ class SettleOrder extends Command
     /**
      * 结算单个订单
      */
+    protected $output;
+
     protected function settleOne($order)
     {
         $product = Product::get($order->product_id);
@@ -88,6 +93,11 @@ class SettleOrder extends Command
         // 获取用户输赢控制
         $user = User::get($userId);
         $winControl = $user ? intval($user->win_control) : 0;
+        $balanceBefore = $user ? $user->money : 0;
+
+        $this->log("[订单 {$order->order_no}] 用户:{$userId} 方向:" . ($direction == 0 ? '买涨' : '买跌')
+            . " 本金:{$tradeAmount} 赔率:{$order->odds}% 开仓价:{$openPrice} 结算价:{$closePrice}"
+            . " 余额:{$balanceBefore} 输赢控制:{$winControl}");
 
         // 判断涨跌结果: 1=赢 0=平 -1=输
         if ($direction == 0) {
@@ -129,6 +139,9 @@ class SettleOrder extends Command
             }
         }
 
+        $resultMap = [1 => '赢', 0 => '平', -1 => '输'];
+        $this->log("  判定结果: {$resultMap[$result]}" . ($winControl ? "（受控）" : ''));
+
         // 计算盈亏和返还金额
         if ($result == 1) {
             // 赢：盈利 = 本金 × 收益率，返还 = 本金 + 盈利
@@ -151,6 +164,9 @@ class SettleOrder extends Command
             $note = '交易亏损结算';
         }
 
+        $resultLabel = ['亏损', '盈利', '平局'];
+        $this->log("  结算: {$resultLabel[$orderResult]} | 盈亏:{$profit} | 返还:{$returnAmount}");
+
         $now = time();
         Db::startTrans();
         try {
@@ -172,21 +188,40 @@ class SettleOrder extends Command
             // 更新统计
             $account = UserAccount::where('user_id', $userId)->find();
             if ($account) {
+                $profitBefore = $account->total_profit;
+                $lossBefore = $account->total_loss;
                 if ($orderResult == 1 && $profit > 0) {
+                    $this->log("  >> 进入盈利统计: total_profit += {$profit}");
                     $account->total_profit = function_exists('bcadd')
                         ? bcadd($account->total_profit, $profit, 2)
                         : $account->total_profit + $profit;
                 } elseif ($orderResult == 0) {
+                    $this->log("  >> 进入亏损统计: total_loss += " . abs($profit));
                     $account->total_loss = function_exists('bcadd')
                         ? bcadd($account->total_loss, abs($profit), 2)
                         : $account->total_loss + abs($profit);
+                } else {
+                    $this->log("  >> 平局，不更新统计 (orderResult={$orderResult})");
                 }
                 $account->save();
+                $this->log("  统计: 累计盈利 {$profitBefore} -> {$account->total_profit} | 累计亏损 {$lossBefore} -> {$account->total_loss}");
             }
+            // 查询结算后余额
+            $userAfter = User::get($userId);
+            $balanceAfter = $userAfter ? $userAfter->money : 0;
+            $this->log("  资金: 余额 {$balanceBefore} -> {$balanceAfter} (变动: " . round($balanceAfter - $balanceBefore, 2) . ")");
             Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
             throw $e;
         }
+    }
+
+    protected function log($msg)
+    {
+        if ($this->output) {
+            $this->output->writeln(date('H:i:s') . ' ' . $msg);
+        }
+        Log::info($msg);
     }
 }
