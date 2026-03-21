@@ -36,25 +36,26 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'end_time', title: __('End_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
                         {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
                         {field: 'operate', title: __('Operate'), table: table,
-                            buttons: [
-                                {
-                                    name: 'settle',
-                                    text: __('结算'),
-                                    title: __('手动结算'),
-                                    classname: 'btn btn-xs btn-warning btn-ajax',
-                                    icon: 'fa fa-calculator',
-                                    url: 'financeorder/settle',
-                                    confirm: '确认手动结算该锁仓订单？',
-                                    success: function(data, ret){ $(".btn-refresh").trigger("click"); },
-                                    visible: function(row){ return row.status == 0; }
-                                }
-                            ],
+                            // buttons: [
+                            //     {
+                            //         name: 'settle',
+                            //         text: __('结算'),
+                            //         title: __('手动结算'),
+                            //         classname: 'btn btn-xs btn-warning btn-ajax',
+                            //         icon: 'fa fa-calculator',
+                            //         url: 'financeorder/settle',
+                            //         confirm: '确认手动结算该锁仓订单？',
+                            //         success: function(data, ret){ $(".btn-refresh").trigger("click"); },
+                            //         visible: function(row){ return row.status == 0; }
+                            //     }
+                            // ],
                             formatter: function (value, row, index) {
-                                var html = '';
-                                if (row.status == 0) {
-                                    html += '<a href="javascript:;" class="btn btn-xs btn-warning btn-ajax" data-url="financeorder/settle" data-params="ids=' + row.id + '" data-confirm="确认手动结算该锁仓订单？" title="手动结算"><i class="fa fa-calculator"></i> 结算</a>';
-                                }
-                                return html;
+                                // var html = '';
+                                // if (row.status == 0) {
+                                //     html += '<a href="javascript:;" class="btn btn-xs btn-warning btn-ajax" data-url="financeorder/settle" data-params="ids=' + row.id + '" data-confirm="确认手动结算该锁仓订单？" title="手动结算"><i class="fa fa-calculator"></i> 结算</a>';
+                                // }
+                                // return html;
+                                return '';
                             }
                         }
                     ]
