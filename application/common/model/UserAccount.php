@@ -61,7 +61,7 @@ class UserAccount extends Model
                     $account->total_recharge = function_exists('bcadd') ? bcadd($account->total_recharge, $amount, 2) : $account->total_recharge + $amount;
                 } elseif ($type == 2) {
                     $account->total_withdraw = function_exists('bcadd') ? bcadd($account->total_withdraw, abs($amount), 2) : $account->total_withdraw + abs($amount);
-                } elseif (in_array($type, [4, 7, 8]) && $amount > 0) {
+                } elseif ($type == 7 && $amount > 0) {
                     $account->total_profit = function_exists('bcadd') ? bcadd($account->total_profit, $amount, 2) : $account->total_profit + $amount;
                 }
                 $account->save();

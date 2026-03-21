@@ -169,15 +169,19 @@ class SettleOrder extends Command
                     throw new \Exception('Return balance failed');
                 }
             }
-            // 更新统计：亏损记录
-            if ($orderResult == 0) {
-                $account = UserAccount::where('user_id', $userId)->find();
-                if ($account) {
+            // 更新统计
+            $account = UserAccount::where('user_id', $userId)->find();
+            if ($account) {
+                if ($orderResult == 1 && $profit > 0) {
+                    $account->total_profit = function_exists('bcadd')
+                        ? bcadd($account->total_profit, $profit, 2)
+                        : $account->total_profit + $profit;
+                } elseif ($orderResult == 0) {
                     $account->total_loss = function_exists('bcadd')
                         ? bcadd($account->total_loss, abs($profit), 2)
                         : $account->total_loss + abs($profit);
-                    $account->save();
                 }
+                $account->save();
             }
             Db::commit();
         } catch (\Exception $e) {
