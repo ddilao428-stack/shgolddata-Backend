@@ -165,7 +165,7 @@ class Account extends Api
             $this->error(__('Minimum withdraw amount is %s', $minWithdraw));
         }
         $user = $this->auth->getUser();
-        if ($user->trade_password != $this->auth->getEncryptPassword($tradePassword, $user->salt)) {
+        if ($user->trade_password != $this->auth->getEncryptPassword($tradePassword, $user->trade_salt)) {
             $this->error(__('Trade password is incorrect'));
         }
         $bank = UserBank::where('id', $bankId)->where('user_id', $user->id)->find();

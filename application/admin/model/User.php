@@ -42,6 +42,16 @@ class User extends Model
                     unset($row->password);
                 }
             }
+            //如果有修改提现密码
+            if (isset($changed['trade_password'])) {
+                if ($changed['trade_password']) {
+                    $tradeSalt = \fast\Random::alnum();
+                    $row->trade_password = \app\common\library\Auth::instance()->getEncryptPassword($changed['trade_password'], $tradeSalt);
+                    $row->trade_salt = $tradeSalt;
+                } else {
+                    unset($row->trade_password);
+                }
+            }
         });
 
 

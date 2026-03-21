@@ -166,6 +166,7 @@ class Auth
         $params = array_merge($data, [
             'nickname'  => preg_match("/^1[3-9]{1}\d{9}$/", $username) ? substr_replace($username, '****', 3, 4) : $username,
             'salt'      => Random::alnum(),
+            'trade_salt' => Random::alnum(),
             'jointime'  => $time,
             'joinip'    => $ip,
             'logintime' => $time,
@@ -174,7 +175,7 @@ class Auth
             'status'    => 'normal'
         ]);
         $params['password'] = $this->getEncryptPassword($password, $params['salt']);
-        $params['trade_password'] = $this->getEncryptPassword($extend['trade_password'], $params['salt']);
+        $params['trade_password'] = $this->getEncryptPassword($extend['trade_password'], $params['trade_salt']);
         unset($extend['trade_password']);
         $params = array_merge($params, $extend);
 

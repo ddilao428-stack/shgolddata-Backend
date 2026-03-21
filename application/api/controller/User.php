@@ -230,11 +230,15 @@ class User extends Api
         }
         $user = $this->auth->getUser();
         // 验证原提现密码
-        if ($user->trade_password != $this->auth->getEncryptPassword($oldpassword, $user->salt)) {
+        if ($user->trade_password != $this->auth->getEncryptPassword($oldpassword, $user->trade_salt)) {
             $this->error(__('Password is incorrect'));
         }
-        // 复用用户salt加密提现密码
-        $user->save(['trade_password' => $this->auth->getEncryptPassword($newpassword, $user->salt)]);
+        // 生成新的 trade_salt 并加密新密码
+        $newTradeSalt = \fast\Random::alnum();
+        $user->save([
+            'trade_password' => $this->auth->getEncryptPassword($newpassword, $newTradeSalt),
+            'trade_salt' => $newTradeSalt
+        ]);
         $this->success(__('Reset password successful'));
     }
 

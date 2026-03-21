@@ -106,18 +106,12 @@ class User extends Backend
             if (empty($params['nickname'])) {
                 $_POST['row']['nickname'] = $params['username'] ?? '';
             }
-            // 处理提现密码
-            if (!empty($params['trade_password'])) {
-                $row = $this->model->get($ids);
-                if ($row) {
-                    $salt = $row['salt'];
-                    $params['trade_password'] = Auth::instance()->getEncryptPassword($params['trade_password'], $salt);
-                    $_POST['row']['trade_password'] = $params['trade_password'];
-                }
-            } else {
+            // 提现密码为空时不更新，非空时由模型 beforeUpdate 自动加密
+            if (empty($params['trade_password'])) {
                 unset($_POST['row']['trade_password']);
             }
         }
+        
         $row = $this->model->get($ids);
         $this->modelValidate = true;
         $this->modelSceneValidate = true;
