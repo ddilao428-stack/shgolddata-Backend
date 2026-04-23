@@ -46,13 +46,20 @@ class SettleOrder extends Command
     {
         $this->output = $output;
 
+        $output->info('========================================');
+        $output->info('订单自动结算任务启动');
+        $output->info('启动时间: ' . date('Y-m-d H:i:s'));
+        $output->info('进程 PID: ' . getmypid());
+        $output->info('========================================');
+
         try {
             $this->settleOnce($output);
         } catch (\Exception $e) {
             Log::error('settle_order error: ' . $e->getMessage());
-            $output->error($e->getMessage());
+            $output->error('❌ 执行异常: ' . $e->getMessage());
         }
 
+        $output->info('本轮执行完成，1秒后重启...');
         // 等待1秒后退出，由 Supervisor autorestart 自动重启实现持续轮询
         sleep(1);
     }
@@ -63,13 +70,22 @@ class SettleOrder extends Command
     protected function settleOnce(Output $output)
     {
         $now = time();
+        $output->writeln('');
+        $output->comment('⏰ ' . date('Y-m-d H:i:s') . ' 开始扫描待结算订单...');
+        
         $orders = Order::where('status', 0)
             ->where('settle_time', '<=', $now)
             ->limit(100)
             ->select();
-        if (!$orders || count($orders) == 0) {
+        
+        $count = $orders ? count($orders) : 0;
+        $output->info("📋 查询到 {$count} 笔待结算订单");
+        
+        if (!$orders || $count == 0) {
+            $output->comment('💤 暂无待结算订单，等待下次扫描...');
             return;
         }
+        
         $settled = 0;
         $failed = 0;
         foreach ($orders as $order) {
@@ -83,9 +99,10 @@ class SettleOrder extends Command
                 $output->error("  ✗ {$order->order_no} 失败: " . $e->getMessage());
             }
         }
-        if ($settled || $failed) {
-            $output->info(date('H:i:s') . " settled:{$settled} failed:{$failed}");
-        }
+        
+        $output->info('----------------------------------------');
+        $output->info("📊 本轮结算统计: 成功 {$settled} 笔 | 失败 {$failed} 笔");
+        $output->info('----------------------------------------');
     }
 
     /**
