@@ -13,3 +13,4 @@ composer.lock
 node_modules
 .user.ini
 application/extra/site.php
+.well-known/
