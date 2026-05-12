@@ -26,11 +26,12 @@ class Events
             // 连接外部行情数据源
             self::connectExternalSource();
             // 启动随机间隔推送（一次性，后续由 pushRandomData 自身递归注册）
-            Timer::add(mt_rand(2, 5), [__CLASS__, 'pushRandomData'], [], false);
+            // 产品多了，缩短推送间隔：1-3秒
+            Timer::add(mt_rand(1, 3), [__CLASS__, 'pushRandomData'], [], false);
             // 定时更新加密货币价格（每1小时从 CoinGecko 获取基准价格）
             Timer::add(3600, [__CLASS__, 'updateCryptoPrices']);
-            // 定时推送加密货币价格（每2秒）
-            Timer::add(2, [__CLASS__, 'pushCryptoPrices']);
+            // 定时推送加密货币价格（每1秒，提高频率）
+            Timer::add(1, [__CLASS__, 'pushCryptoPrices']);
             echo "SGE 行情推送服务已启动\n";
         }
     }
@@ -222,8 +223,8 @@ class Events
             if ($currentPrice <= 0) {
                 continue;
             }
-            // 40% 概率推送
-            if (mt_rand(1, 100) > 40) {
+            // 70% 概率推送（产品多了，提高推送概率）
+            if (mt_rand(1, 100) > 70) {
                 continue;
             }
 
@@ -285,8 +286,8 @@ class Events
             Gateway::sendToGroup($code, json_encode($pushData));
         }
 
-        // 设置下次推送时间（2-5秒随机）
-        Timer::add(mt_rand(2, 5), [__CLASS__, 'pushRandomData'], [], false);
+        // 设置下次推送时间（1-3秒随机，提高频率）
+        Timer::add(mt_rand(1, 3), [__CLASS__, 'pushRandomData'], [], false);
     }
 
     // ==================== CoinGecko 加密货币 ====================
@@ -409,8 +410,8 @@ class Events
             if ($currentPrice <= 0) {
                 continue;
             }
-            // 40% 概率推送
-            if (mt_rand(1, 100) > 40) {
+            // 70% 概率推送（产品多了，提高推送概率）
+            if (mt_rand(1, 100) > 70) {
                 continue;
             }
 

@@ -19,4 +19,5 @@ return [
     'app\admin\command\Api',
     'app\admin\command\SettleOrder',
     'app\admin\command\SettleFinance',
+    'app\admin\command\FetchNews',
 ];
