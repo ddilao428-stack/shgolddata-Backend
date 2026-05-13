@@ -28,8 +28,8 @@ class Events
             // 启动随机间隔推送（一次性，后续由 pushRandomData 自身递归注册）
             // 产品多了，缩短推送间隔：1-3秒
             Timer::add(mt_rand(1, 3), [__CLASS__, 'pushRandomData'], [], false);
-            // 定时更新加密货币价格（每1小时从 CoinGecko 获取基准价格）
-            Timer::add(3600, [__CLASS__, 'updateCryptoPrices']);
+            // 定时更新加密货币价格（每5分钟从 CoinGecko 获取基准价格，提高同步频率）
+            Timer::add(300, [__CLASS__, 'updateCryptoPrices']);
             // 定时推送加密货币价格（每1秒，提高频率）
             Timer::add(1, [__CLASS__, 'pushCryptoPrices']);
             echo "SGE 行情推送服务已启动\n";
@@ -90,7 +90,7 @@ class Events
         }
         $dataId = implode(',', $keys);
 
-        $conn = new AsyncTcpConnection('ws://39.107.99.235:8889');
+        $conn = new AsyncTcpConnection('ws://39.107.99.235/ws');
 
         $conn->onConnect = function ($connection) use ($dataId) {
             $payload = json_encode(['event' => 'REG', 'Key' => $dataId]);
@@ -300,7 +300,10 @@ class Events
      */
     public static function updateCryptoPrices()
     {
+        echo date('H:i:s') . " [CoinGecko] 开始更新加密货币价格...\n";
+        
         if (!self::$db) {
+            echo date('H:i:s') . " [CoinGecko] 错误: 数据库未初始化\n";
             return;
         }
         $coins = self::$db->select('id,capital_key,price,price_decimals')
@@ -308,18 +311,24 @@ class Events
             ->where("data_source = 'CoinGecko' AND status = 1 AND capital_key != ''")
             ->query();
         if (empty($coins)) {
+            echo date('H:i:s') . " [CoinGecko] 未找到需要更新的加密货币产品\n";
             return;
         }
+
+        echo date('H:i:s') . " [CoinGecko] 找到 " . count($coins) . " 个加密货币产品\n";
 
         $coinIds = [];
         foreach ($coins as $coin) {
             $coinIds[] = $coin['capital_key'];
         }
         $coinIdsStr = implode(',', $coinIds);
+        echo date('H:i:s') . " [CoinGecko] 请求币种: {$coinIdsStr}\n";
 
         $url = self::$cryptoBaseUrl . '/simple/price?ids=' . $coinIdsStr
-             . '&vs_currencies=cny&include_24hr_change=true&include_24hr_vol=true'
+             . '&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true'
              . '&x_cg_demo_api_key=' . self::$cryptoApiKey;
+
+        echo date('H:i:s') . " [CoinGecko] 请求 URL: {$url}\n";
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -331,24 +340,36 @@ class Events
         curl_close($ch);
 
         if ($httpCode != 200 || empty($response)) {
-            echo "CoinGecko API 请求失败: HTTP {$httpCode}\n";
+            echo date('H:i:s') . " [CoinGecko] API 请求失败: HTTP {$httpCode}\n";
+            if ($response) {
+                echo date('H:i:s') . " [CoinGecko] 响应: " . substr($response, 0, 200) . "\n";
+            }
             return;
         }
+
+        echo date('H:i:s') . " [CoinGecko] API 请求成功，解析数据...\n";
 
         $prices = json_decode($response, true);
         if (empty($prices)) {
+            echo date('H:i:s') . " [CoinGecko] JSON 解析失败\n";
             return;
         }
 
+        echo date('H:i:s') . " [CoinGecko] 解析到 " . count($prices) . " 个币种价格\n";
+
         $now = time();
+        $updated = 0;
         foreach ($coins as $coin) {
             $coinId = $coin['capital_key'];
-            if (!isset($prices[$coinId]['cny'])) {
+            if (!isset($prices[$coinId]['usd'])) {
+                echo date('H:i:s') . " [CoinGecko] 警告: {$coinId} 未返回价格数据\n";
                 continue;
             }
 
-            $price     = floatval($prices[$coinId]['cny']);
-            $change24h = isset($prices[$coinId]['cny_24h_change']) ? floatval($prices[$coinId]['cny_24h_change']) : 0;
+            $price     = floatval($prices[$coinId]['usd']);
+            $change24h = isset($prices[$coinId]['usd_24h_change']) ? floatval($prices[$coinId]['usd_24h_change']) : 0;
+
+            echo date('H:i:s') . " [CoinGecko] {$coinId}: \${$price} (24h: {$change24h}%)\n";
 
             // 添加小幅随机波动
             $randomChange = (mt_rand(-10, 10) / 10000);
@@ -383,8 +404,9 @@ class Events
             ];
             self::$db->update('fa_product')->cols($updateData)
                 ->where("id = {$coin['id']}")->query();
+            $updated++;
         }
-        echo date('H:i:s') . " CoinGecko 价格已更新\n";
+        echo date('H:i:s') . " [CoinGecko] 价格更新完成，共更新 {$updated} 个产品\n";
     }
 
     /**
