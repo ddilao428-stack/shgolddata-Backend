@@ -18,14 +18,14 @@ use think\Log;
  * 支持输赢控制，逻辑对齐旧项目
  *
  * Supervisor 配置（宝塔面板）:
- * [program:sg_settle_order]
+ * [program:settle_order]
  * command=php think settle_order
- * directory=/www/wwwroot/shgolddata-Backend/
+ * directory=/www/wwwroot/vipop1c.cjdata.online/Backend
  * autorestart=true
- * startsecs=0
+ * startsecs=3
  * startretries=3
- * stdout_logfile=/www/server/panel/plugin/supervisor/log/sg_settle_order.out.log
- * stderr_logfile=/www/server/panel/plugin/supervisor/log/sg_settle_order.err.log
+ * stdout_logfile=/www/server/panel/plugin/supervisor/log/settle_order.out.log
+ * stderr_logfile=/www/server/panel/plugin/supervisor/log/settle_order.err.log
  * stdout_logfile_maxbytes=2MB
  * stderr_logfile_maxbytes=2MB
  * user=root
@@ -33,7 +33,7 @@ use think\Log;
  * numprocs=1
  * process_name=%(program_name)s_%(process_num)02d
  *
- * 注意: startsecs 必须设为 0，因为进程每次执行完会正常退出，由 autorestart 自动重启
+ * 注意: 进程为常驻模式，会持续运行不退出
  */
 class SettleOrder extends Command
 {
@@ -52,16 +52,18 @@ class SettleOrder extends Command
         $output->info('进程 PID: ' . getmypid());
         $output->info('========================================');
 
-        try {
-            $this->settleOnce($output);
-        } catch (\Exception $e) {
-            Log::error('settle_order error: ' . $e->getMessage());
-            $output->error('❌ 执行异常: ' . $e->getMessage());
+        // 常驻进程，每秒轮询一次
+        while (true) {
+            try {
+                $this->settleOnce($output);
+            } catch (\Exception $e) {
+                Log::error('settle_order error: ' . $e->getMessage());
+                $output->error('❌ 执行异常: ' . $e->getMessage());
+            }
+            
+            // 每秒轮询一次
+            sleep(1);
         }
-
-        $output->info('本轮执行完成，1秒后重启...');
-        // 等待1秒后退出，由 Supervisor autorestart 自动重启实现持续轮询
-        sleep(1);
     }
 
     /**
