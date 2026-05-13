@@ -146,15 +146,15 @@ class Events
         $diff     = $newPrice - $lastClose;
         $diffRate = ($diff / $lastClose) * 100;
 
-        // 限制涨跌幅 ±10%
-        if ($diffRate > 10) {
-            $newPrice = $lastClose * 1.1;
-            $diff     = $lastClose * 0.1;
-            $diffRate = 10;
-        } elseif ($diffRate < -10) {
-            $newPrice = $lastClose * 0.9;
-            $diff     = $lastClose * -0.1;
-            $diffRate = -10;
+        // 限制涨跌幅 ±3%（更真实）
+        if ($diffRate > 3) {
+            $newPrice = $lastClose * 1.03;
+            $diff     = $lastClose * 0.03;
+            $diffRate = 3;
+        } elseif ($diffRate < -3) {
+            $newPrice = $lastClose * 0.97;
+            $diff     = $lastClose * -0.03;
+            $diffRate = -3;
         }
 
         $decimals  = self::getPriceDecimals($code);
@@ -239,14 +239,14 @@ class Events
             $diff     = $newPrice - $lastClose;
             $diffRate = ($diff / $lastClose) * 100;
 
-            if ($diffRate > 10) {
-                $newPrice = $lastClose * 1.1;
-                $diff     = $lastClose * 0.1;
-                $diffRate = 10;
-            } elseif ($diffRate < -10) {
-                $newPrice = $lastClose * 0.9;
-                $diff     = $lastClose * -0.1;
-                $diffRate = -10;
+            if ($diffRate > 3) {
+                $newPrice = $lastClose * 1.03;
+                $diff     = $lastClose * 0.03;
+                $diffRate = 3;
+            } elseif ($diffRate < -3) {
+                $newPrice = $lastClose * 0.97;
+                $diff     = $lastClose * -0.03;
+                $diffRate = -3;
             }
 
             $decimals  = intval($product['price_decimals']) ?: 2;
@@ -448,14 +448,14 @@ class Events
             $diff     = $newPrice - $lastClose;
             $diffRate = ($diff / $lastClose) * 100;
 
-            if ($diffRate > 10) {
-                $newPrice = $lastClose * 1.1;
-                $diff     = $lastClose * 0.1;
-                $diffRate = 10;
-            } elseif ($diffRate < -10) {
-                $newPrice = $lastClose * 0.9;
-                $diff     = $lastClose * -0.1;
-                $diffRate = -10;
+            if ($diffRate > 3) {
+                $newPrice = $lastClose * 1.03;
+                $diff     = $lastClose * 0.03;
+                $diffRate = 3;
+            } elseif ($diffRate < -3) {
+                $newPrice = $lastClose * 0.97;
+                $diff     = $lastClose * -0.03;
+                $diffRate = -3;
             }
 
             $decimals  = intval($crypto['price_decimals']) ?: 2;
@@ -553,21 +553,25 @@ class Events
     }
 
     /**
-     * 获取产品波动率系数
+     * 获取产品波动率系数（适中波动，真实且有活力）
      */
     protected static function getVolatility($code)
     {
         $code = strtolower($code);
+        // 虚拟货币：每次波动 ±0.01% ~ ±0.05%，日累积约 ±2-5%
         if (strpos($code, 'btc') !== false || strpos($code, 'eth') !== false) {
-            return 5;
-        }
-        if (strpos($code, 'usd') !== false || strpos($code, 'eur') !== false || strpos($code, 'fx_') !== false) {
-            return 0.5;
-        }
-        if (strpos($code, 'gold') !== false || strpos($code, 'xau') !== false || strpos($code, 'xag') !== false) {
             return 2;
         }
-        return 2.5;
+        // 外汇：每次波动 ±0.002% ~ ±0.01%，日累积约 ±0.5-1.5%
+        if (strpos($code, 'usd') !== false || strpos($code, 'eur') !== false || strpos($code, 'fx_') !== false) {
+            return 0.4;
+        }
+        // 贵金属：每次波动 ±0.005% ~ ±0.02%，日累积约 ±1-3%
+        if (strpos($code, 'gold') !== false || strpos($code, 'xau') !== false || strpos($code, 'xag') !== false) {
+            return 1;
+        }
+        // 其他产品：每次波动 ±0.005% ~ ±0.02%
+        return 1;
     }
 
     /**
